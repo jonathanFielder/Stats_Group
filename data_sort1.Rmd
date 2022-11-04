@@ -1,0 +1,79 @@
+---
+title: "stats final project 1"
+author: "Jonathan Fielder"
+date: '2022-11-04'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r imports}
+library(dplyr)
+```
+
+
+
+```{r crime short}
+crime15 <- Juris15
+crime16 <- Juris16
+crime17 <- Juris17
+crime18 <- Juris18
+crime19 <- Juris19
+
+colnames(crime16) <- colnames(crime15)
+colnames(crime17) <- colnames(crime15)
+colnames(crime18) <- colnames(crime15)
+colnames(crime19) <- colnames(crime15)
+
+
+crime_15_19 <- rbind.data.frame(crime15, crime16, crime17, crime18, crime19)
+```
+
+
+
+```{r school sort}
+grades15 <- SchoolGrades15[ -c(5:15,17,24)]
+grades16 <- SchoolGrades16[ -c(5:19,21:23,30)]
+grades17 <- SchoolGrades17[ -c(5:19,21:40,47)]
+grades18 <- SchoolGrades18[ -c(5:19,21:41,48)]
+grades19 <- SchoolGrades19[ -c(5:19,21:42)]
+
+colnames(grades15)[5] ="Grade"
+colnames(grades16)[5] ="Grade"
+colnames(grades17)[5] ="Grade"
+colnames(grades18)[5] ="Grade"
+colnames(grades19)[5] ="Grade"
+
+grades15 <- grades15 %>%
+  mutate(Year = (2015))
+grades16 <- grades16 %>%
+  mutate(Year = (2016))
+grades17 <- grades17 %>%
+  mutate(Year = (2017))
+grades18 <- grades18 %>%
+  mutate(Year = (2018))
+grades19 <- grades19 %>%
+  mutate(Year = (2019))
+  
+
+colnames(grades16) <- colnames(grades15)
+colnames(grades17) <- colnames(grades15)
+colnames(grades18) <- colnames(grades15)
+colnames(grades19) <- colnames(grades15)
+
+grades15_19 <- rbind(grades15, grades16, grades17, grades18, grades19)
+
+## grades letters to numbers i.e. A=4 B=3 C=2 D=1 F=0
+grades15_19 <- grades15_19 %>%
+  mutate(Grade=ifelse(Grade == "A",4,Grade),
+         Grade=ifelse(Grade == "B",3,Grade),
+         Grade=ifelse(Grade == "C",2,Grade),
+         Grade=ifelse(Grade == "D",1,Grade),
+         Grade=ifelse(Grade == "F",0,Grade))
+  
+
+#test <- grades15_19 %>% group_by_at(vars(`District Name`)) %>%
+ # summarize(var(Grade))
+```
