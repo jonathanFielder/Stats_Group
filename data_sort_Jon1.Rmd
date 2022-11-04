@@ -84,7 +84,7 @@ grades15_19 <- grades15_19 %>%
          Grade=ifelse(Grade == "D",1,Grade),
          Grade=ifelse(Grade == "F",0,Grade))
   
-
+colnames(grades15_19)[2] ="County"
 #test <- grades15_19 %>% group_by_at(vars(`District Name`)) %>%
  # summarize(var(Grade))
 ```
