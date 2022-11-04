@@ -11,6 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r imports}
 library(dplyr)
+library(readxl)
+Juris15 <- read_excel("Juris15.xlsx")
+Juris16 <- read_excel("Juris16.xlsx")
+Juris17 <- read_excel("Juris17.xlsx")
+Juris18 <- read_excel("Juris18.xlsx")
+Juris19 <- read_excel("Juris19.xlsx")
+SchoolGrades15 <- read_excel("SchoolGrades15.xls")
+SchoolGrades16 <- read_excel("SchoolGrades16.xls")
+SchoolGrades17 <- read_excel("SchoolGrades17.xls")
+SchoolGrades18 <- read_excel("SchoolGrades18.xls")
+SchoolGrades19 <- read_excel("SchoolGrades19.xls")
 ```
 
 
