@@ -15,4 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 with(crime_15_19, sum(Population[County == '01-ALACHUA']))
 
 ```
+```{r}
+as.numeric(crime_15_19$Murder)
+with(crime_15_19, sum(Murder[County == '01-ALACHUA']))
+
+```
 
