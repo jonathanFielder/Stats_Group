@@ -9,4 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-+ 
++ average of school and crime for each county for each column
+
+```{r}
+with(crime_15_19, sum(Population[County == '01-ALACHUA']))
+
+```
+
