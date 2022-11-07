@@ -16,8 +16,29 @@ with(crime_15_19, sum(Population[County == '01-ALACHUA']))
 
 ```
 ```{r}
-as.numeric(crime_15_19$Murder)
-with(crime_15_19, sum(Murder[County == '01-ALACHUA']))
+countyCrimes15_19 <- crime_15_19 %>%
+  group_by(County, Year) %>%
+  if()
+  summarize(`Population` = sum(as.numeric(`Population`)), 
+            `Total Index Crimes` = sum(as.numeric(`Total Index Crimes`)),
+            `Crime Rate per 100,000 Population` = sum(as.numeric(`Crime Rate per 100,000 Population`)), 
+            `Murder` = sum(as.numeric(`Murder`)),
+            `Murder Clearances` = sum(as.numeric(`Murder Clearances`)),
+            `Rape^` = sum(as.numeric(`Rape^`)), 
+            `Rape Clearances` = sum(as.numeric(`Rape Clearances`)),
+            `Robbery` = sum(as.numeric(`Robbery`)),
+            `Robbery Clearances` = sum(as.numeric(`Robbery Clearances`)),
+            `Aggravated Assault` = sum(as.numeric(`Murder Clearances`)),
+            `Aggravated Assault Clearances` = sum(as.numeric(`Aggravated Assault Clearances`)), 
+            `Burglary` = sum(as.numeric(`Burglary`)),
+            `Burglary Clearances` = sum(as.numeric(`Burglary Clearances`)),
+            `Larceny` = sum(as.numeric(`Larceny`)),
+            `Larceny Clearances` = sum(as.numeric(`Larceny Clearances`)),
+            `Motor Vehicle Theft` = sum(as.numeric(`Motor Vehicle Theft`)), 
+            `Motor Vehicle Theft Clearances` = sum(as.numeric(`Motor Vehicle Theft Clearances`)),
+            `Total Clearances` = sum(as.numeric(`Total Clearances`)),
+            `Clearance Rate per 100 Offenses` = mean(as.numeric(`Clearance Rate per 100 Offenses`)))
+            
 
 ```
 
