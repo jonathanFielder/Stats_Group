@@ -51,11 +51,15 @@ grades17 <- SchoolGrades17[ -c(5:19,21:40,47)]
 grades18 <- SchoolGrades18[ -c(5:19,21:41,48)]
 grades19 <- SchoolGrades19[ -c(5:19,21:42)]
 
-colnames(grades15)[5] ="Grade"
-colnames(grades16)[5] ="Grade"
-colnames(grades17)[5] ="Grade"
-colnames(grades18)[5] ="Grade"
-colnames(grades19)[5] ="Grade"
+
+## oops more to get rid of
+grades15 <- grades15[ -c(1,3,8,9)]
+grades16 <- grades16[ -c(1,3,8,9)]
+grades17 <- grades17[ -c(1,3,8,9)]
+grades18 <- grades18[ -c(1,3,8,9)]
+grades19 <- grades19[ -c(1,3,8,9)]
+
+
 
 grades15 <- grades15 %>%
   mutate(Year = (2015))
@@ -74,7 +78,31 @@ colnames(grades17) <- colnames(grades15)
 colnames(grades18) <- colnames(grades15)
 colnames(grades19) <- colnames(grades15)
 
+
+
+
+
+
+
+
+
+## combine all years
 grades15_19 <- rbind(grades15, grades16, grades17, grades18, grades19)
+
+## rename to grade
+colnames(grades15_19)[3] ="Grade"
+
+## rename to county
+colnames(grades15_19)[1] ="County"
+
+
+## logic to numbers (100 yes 2 no) easier to switch to percent
+
+grades15_19$`Charter School` <-ifelse(grades15_19$`Charter School` == "YES",100,0)
+grades15_19$`Title 1` <-ifelse(grades15_19$`Title 1` == "YES",100,0)
+
+
+
 
 ## grades letters to numbers i.e. A=4 B=3 C=2 D=1 F=0
 grades15_19 <- grades15_19 %>%
@@ -82,9 +110,44 @@ grades15_19 <- grades15_19 %>%
          Grade=ifelse(Grade == "B",3,Grade),
          Grade=ifelse(Grade == "C",2,Grade),
          Grade=ifelse(Grade == "D",1,Grade),
-         Grade=ifelse(Grade == "F",0,Grade))
+         Grade=ifelse(Grade == "F",0,Grade),
+         Grade=ifelse(Grade == "I",5,Grade))
+
+
+## removes incomplete grade schools for each year the data was not good for the school grade
+grades15_19 <- subset(grades15_19, Grade != 5)
+
+## remove incomplete minority percentages
+colnames(grades15_19)[6] = "Minority"
+grades15_19 <- grades15_19 %>%
+mutate(Minority=ifelse(Minority == ".",200,Minority))
+grades15_19 <- subset(grades15_19, Minority != 200)
+
+## remove NA disadvantage
+colnames(grades15_19)[7] = "Dis"
+grades15_19 <- grades15_19 %>%
+mutate(Dis=ifelse(Dis == ".",200,Dis))
+grades15_19 <- subset(grades15_19, Dis != 200)
+
+
+## summarize by county
+countyGrades15_19 <- grades15_19 %>%
+  group_by(County, Year) %>%
+  summarize(`Title 1` = mean(as.numeric(`Title 1`)), 
+            Grade = mean(as.numeric(Grade)),
+            `Charter School` = mean(as.numeric(`Charter School`)),
+            Minority = mean(as.numeric(Minority)),
+            Disadvantaged = mean(as.numeric(Dis)))
+
+
+## rename columns to reflect data
+colnames(countyGrades15_19)[3] = "Percentage of Title 1 Schools"
+colnames(countyGrades15_19)[4] = "Grade (0 = F, 4 = A)"
+colnames(countyGrades15_19)[5] = "Percentage of Charter Schools"
+colnames(countyGrades15_19)[6] = "Percentage of Minority Students"
+colnames(countyGrades15_19)[7] = "Percentage of Economically Disadvantaged Students"
   
-colnames(grades15_19)[2] ="County"
-#test <- grades15_19 %>% group_by_at(vars(`District Name`)) %>%
- # summarize(var(Grade))
 ```
+
+
+countyGrades15_19 is the Melange
