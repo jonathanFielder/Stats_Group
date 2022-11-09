@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r imports}
+library(tidyverse)
 library(dplyr)
 library(readxl)
 Juris15 <- read_excel("Juris15.xlsx")

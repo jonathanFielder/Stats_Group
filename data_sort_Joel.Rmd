@@ -12,33 +12,33 @@ knitr::opts_chunk$set(echo = TRUE)
 + average of school and crime for each county for each column
 
 ```{r}
-with(crime_15_19, sum(Population[County == '01-ALACHUA']))
+floridaCrimes_15_19 <- crime_15_19[-c(8,10,12,14,16,18,20:22)]
+
+```
+
+
+
+```{r}
+
+
+  
 
 ```
 ```{r}
-countyCrimes15_19 <- crime_15_19 %>%
+countyCrimes15_19 <- floridaCrimes_15_19 %>%
   group_by(County, Year) %>%
-  if()
-  summarize(`Population` = sum(as.numeric(`Population`)), 
-            `Total Index Crimes` = sum(as.numeric(`Total Index Crimes`)),
-            `Crime Rate per 100,000 Population` = sum(as.numeric(`Crime Rate per 100,000 Population`)), 
-            `Murder` = sum(as.numeric(`Murder`)),
-            `Murder Clearances` = sum(as.numeric(`Murder Clearances`)),
-            `Rape^` = sum(as.numeric(`Rape^`)), 
-            `Rape Clearances` = sum(as.numeric(`Rape Clearances`)),
-            `Robbery` = sum(as.numeric(`Robbery`)),
-            `Robbery Clearances` = sum(as.numeric(`Robbery Clearances`)),
-            `Aggravated Assault` = sum(as.numeric(`Murder Clearances`)),
-            `Aggravated Assault Clearances` = sum(as.numeric(`Aggravated Assault Clearances`)), 
-            `Burglary` = sum(as.numeric(`Burglary`)),
-            `Burglary Clearances` = sum(as.numeric(`Burglary Clearances`)),
-            `Larceny` = sum(as.numeric(`Larceny`)),
-            `Larceny Clearances` = sum(as.numeric(`Larceny Clearances`)),
-            `Motor Vehicle Theft` = sum(as.numeric(`Motor Vehicle Theft`)), 
-            `Motor Vehicle Theft Clearances` = sum(as.numeric(`Motor Vehicle Theft Clearances`)),
-            `Total Clearances` = sum(as.numeric(`Total Clearances`)),
-            `Clearance Rate per 100 Offenses` = mean(as.numeric(`Clearance Rate per 100 Offenses`)))
-            
+  summarize(`Population` = sum(suppressWarnings(as.numeric(`Population`))), 
+            `Total Index Crimes` = sum(suppressWarnings(as.numeric(`Total Index Crimes`)),na.rm=TRUE),
+            `Crime Rate per 100,000 Population` = mean(suppressWarnings(as.numeric(`Crime Rate per 100,000 Population`)),na.rm = TRUE), 
+            `Murder` = sum(suppressWarnings(as.numeric(`Murder`)),na.rm = TRUE),
+            `Rape^` = sum(suppressWarnings(as.numeric(`Rape^`)),na.rm = TRUE), 
+            `Robbery` = sum(suppressWarnings(as.numeric(`Robbery`)),na.rm = TRUE),
+            `Aggravated Assault` = sum(suppressWarnings(as.numeric(`Aggravated Assault`)),na.rm = TRUE),
+            `Burglary` = sum(suppressWarnings(as.numeric(`Burglary`)),na.rm = TRUE),
+            `Larceny` = sum(suppressWarnings(as.numeric(`Larceny`)),na.rm = TRUE),
+            `Motor Vehicle Theft` = sum(suppressWarnings(as.numeric(`Motor Vehicle Theft`)),na.rm = TRUE))
 
+countyCrimes15_19 <- countyCrimes15_19 %>%
+  mutate(County = str_sub(County, 4, -1))
 ```
 
