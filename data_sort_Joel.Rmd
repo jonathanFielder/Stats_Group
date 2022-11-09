@@ -17,13 +17,6 @@ floridaCrimes_15_19 <- crime_15_19[-c(8,10,12,14,16,18,20:22)]
 ```
 
 
-
-```{r}
-
-
-  
-
-```
 ```{r}
 countyCrimes15_19 <- floridaCrimes_15_19 %>%
   group_by(County, Year) %>%
@@ -40,5 +33,6 @@ countyCrimes15_19 <- floridaCrimes_15_19 %>%
 
 countyCrimes15_19 <- countyCrimes15_19 %>%
   mutate(County = str_sub(County, 4, -1))
-```
 
+countyCrimes15_19 <- countyCrimes15_19[-c(1:4),]
+```
