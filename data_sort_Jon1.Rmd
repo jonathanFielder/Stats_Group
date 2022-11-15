@@ -9,10 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+* Hypothesis - I expect to see a positive correlation between crime rate in a county and the average percentage of economically disadvantaged students. We will be looking to see if there is evidence in the data to support this hypothesis as well as looking for other possible correlations in the data such as: average grades in a county compared to economic disadvantage, economic disadvantage and types of crime (e.g. robbery vs. violent crime).
+
 ```{r imports}
 library(tidyverse)
 library(dplyr)
 library(readxl)
+library(ggplot2)
+library(moderndive)
+library(readr)
 Juris15 <- read_excel("Juris15.xlsx")
 Juris16 <- read_excel("Juris16.xlsx")
 Juris17 <- read_excel("Juris17.xlsx")
@@ -142,13 +148,84 @@ countyGrades15_19 <- grades15_19 %>%
 
 
 ## rename columns to reflect data
-colnames(countyGrades15_19)[3] = "Percentage of Title 1 Schools"
-colnames(countyGrades15_19)[4] = "Grade (0 = F, 4 = A)"
-colnames(countyGrades15_19)[5] = "Percentage of Charter Schools"
-colnames(countyGrades15_19)[6] = "Percentage of Minority Students"
-colnames(countyGrades15_19)[7] = "Percentage of Economically Disadvantaged Students"
+colnames(countyGrades15_19)[3] = "title_1_perc"
+colnames(countyGrades15_19)[4] = "grade"
+colnames(countyGrades15_19)[5] = "charter_perc"
+colnames(countyGrades15_19)[6] = "minority_perc"
+colnames(countyGrades15_19)[7] = "econ_disadv_perc"
   
 ```
 
 
 countyGrades15_19 is the Melange
+
+
+merger
+```{r meging data frames}
+county_data <- merge(countyGrades15_19,countyCrimes15_19,by=c("County","Year")) 
+```
+
+
+economic disadvantage vs crime rate per 100,000 per county per year
+```{r econ vs crime per 100,000}
+disadv_crime <- lm(econ_disadv_perc ~ county_data[[10]], data = county_data)
+get_regression_table(disadv_crime)
+
+ggplot(data = county_data, aes(y = econ_disadv_perc, x = county_data[[10]])) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Crime Rate Per 100,000", 
+       y = "economic disadvantage", 
+       title = "economic disadvantage vs crime rate per 100,000 per county per year") +
+  theme_bw()
+
+```
+No correlation?
+
+
+
+economic disadvantage vs grades per county per year
+```{r econ vs grades}
+disadv_crime <- lm(econ_disadv_perc ~ grade, data = county_data)
+get_regression_table(disadv_crime)
+
+ggplot(data = county_data, aes(y = econ_disadv_perc, x = grade)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Average Grades (0 = F, 4 = A)", 
+       y = "economic disadvantage", 
+       title = "economic disadvantage vs grades per county per year") +
+  theme_bw()
+
+```
+
+
+
+grades vs crime rate per 100,000 per county per year
+```{r grades vs crime per 100,000}
+disadv_crime <- lm(grade ~ county_data[[10]], data = county_data)
+get_regression_table(disadv_crime)
+
+ggplot(data = county_data, aes(y = grade, x = county_data[[10]])) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Crime Rate Per 100,000", 
+       y = "Average Grades (0 = F, 4 = A)", 
+       title = "economic disadvantage vs grades per county per year") +
+  theme_bw()
+
+```
+
+Slight correlation between grades in a county and the crime rate
+
+
+
+
+
+
+
+
+
+
+
+
