@@ -211,7 +211,7 @@ ggplot(data = county_data, aes(y = grade, x = county_data[[10]])) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(x = "Crime Rate Per 100,000", 
        y = "Average Grades (0 = F, 4 = A)", 
-       title = "economic disadvantage vs grades per county per year") +
+       title = "Average grades vs crime rate per county per year") +
   theme_bw()
 
 ```
@@ -220,12 +220,105 @@ Slight correlation between grades in a county and the crime rate
 
 
 
+population vs crime rater per 100,000
+(want to see if there is stronger correlation between county population and crime or stronger correlation for grades and crime)
+```{r population vs crime per 100,000}
+ library(scales)
+population_crime <- lm(Population ~ county_data[[10]], data = county_data)
+get_regression_table(population_crime)
+
+ggplot(data = county_data, aes(y = Population, x = county_data[[10]])) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+ 
+  scale_y_continuous(labels = label_comma()) +
+  labs(x = "Crime Rate Per 100,000", 
+       y = "Total County Population", 
+       title = "Total county population vs crime rate per county per year") +
+  theme_bw()
+
+```
 
 
 
 
 
 
+```{r bootstrap for grades}
+
+set.seed(12)
+boot_samp_county_data <- county_data %>% 
+  rep_sample_n(size = nrow(county_data), reps = 1000, replace = TRUE)
+
+boot_distrib_grade <- boot_samp_county_data %>% 
+  group_by(replicate) %>% 
+  summarize(stat = mean(grade))
+
+ci_grades <- boot_distrib_grade %>% 
+  summarize(lower_ci = quantile(stat, 0.025), 
+            upper_ci = quantile(stat, 0.975))
+ci_grades
+
+ggplot(data = boot_distrib_grade, aes(x = stat)) + 
+  geom_histogram(color = "black", fill = "yellow", binwidth = 0.01) + 
+  labs(title = "Bootstrap distribution with 95% CI", 
+       x = "boostrap statistic (mean grade)") +
+  geom_vline(data = ci_grades, aes(xintercept = lower_ci), color = "red", lwd = 1, lty = "dashed") + 
+  geom_vline(data = ci_grades, aes(xintercept = upper_ci), color = "red", lwd = 1, lty = "dashed") +
+  theme_bw()
+
+```
+
+```{r bootstrap for economic disadvantage percentage}
+
+set.seed(12)
+boot_samp_county_data <- county_data %>% 
+  rep_sample_n(size = nrow(county_data), reps = 1000, replace = TRUE)
+
+boot_distrib_econ_dis <- boot_samp_county_data %>% 
+  group_by(replicate) %>% 
+  summarize(stat = mean(econ_disadv_perc))
+
+ci_econ_dis <- boot_distrib_econ_dis %>% 
+  summarize(lower_ci = quantile(stat, 0.025), 
+            upper_ci = quantile(stat, 0.975))
+ci_econ_dis
+
+ggplot(data = boot_distrib_econ_dis, aes(x = stat)) + 
+  geom_histogram(color = "black", fill = "green", binwidth = 0.1) + 
+  labs(title = "Bootstrap distribution with 95% CI", 
+       x = "boostrap statistic (mean econ_disadv_perc)") +
+  geom_vline(data = ci_econ_dis, aes(xintercept = lower_ci), color = "red", lwd = 1, lty = "dashed") + 
+  geom_vline(data = ci_econ_dis, aes(xintercept = upper_ci), color = "red", lwd = 1, lty = "dashed") +
+  theme_bw()
+
+```
+
+
+```{r bootstrap for crime rate per 100,000}
+
+set.seed(12)
+boot_samp_county_data <- county_data %>% 
+  rep_sample_n(size = nrow(county_data), reps = 1000, replace = TRUE)
+
+boot_distrib_crime_rate <- boot_samp_county_data %>% 
+  group_by(replicate) %>% 
+  summarize(stat = mean(na.rm = TRUE, `Crime Rate per 100,000 Population`))
+boot_distrib_crime_rate
+
+library(infer)
+boot_distrib_crime_rate %>% 
+  get_confidence_interval(type = "percentile", level = 0.95)
+
+ggplot(data = boot_distrib_crime_rate, aes(x = stat)) + 
+  geom_histogram(color = "black", fill = "pink", binwidth = 0.1) + 
+  labs(title = "Bootstrap distribution with 95% CI", 
+       x = "boostrap statistic (mean crime rate per 100,000)") +
+  geom_vline(data = ci_econ_dis, aes(xintercept = lower_ci), color = "red", lwd = 1, lty = "dashed") + 
+  geom_vline(data = ci_econ_dis, aes(xintercept = upper_ci), color = "red", lwd = 1, lty = "dashed") +
+  theme_bw()
+
+```
 
 
 
